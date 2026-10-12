@@ -40,7 +40,7 @@
   <section class="charts">
     <div class="card">
       <div class="card-head">
-        <div><h2>Gap to leader, stage by stage</h2><p class="sub">Cumulative time behind the category leader after each timed stage. Lower is better.</p></div>
+        <div><h2>Gap to leader, stage by stage</h2><p class="sub">Cumulative time behind the leader of the selected group after each timed stage. Lower is better.</p></div>
         <div class="toggles"><div class="toggle yfit" data-yfit="cGap" title="Y axis range"><button aria-pressed="true" data-v="all">Whole field</button><button aria-pressed="false" data-v="sel">Fit highlighted</button></div><div class="toggle" id="gapMode"><button aria-pressed="true" data-v="gap">Gap to leader</button><button aria-pressed="false" data-v="rank">Position</button></div></div>
       </div>
       <div class="chart-wrap"><canvas id="cGap" role="img" aria-label="Cumulative gap to leader per stage"></canvas></div>
@@ -79,10 +79,13 @@
   const slug = c => c.split(/[ (]/)[0].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   const scopes = D.categories.filter(c => riders.some(r => r.category === c))
     .map(c => ({ id: slug(c), label: c.replace(/\s*\(.*\)/, '') , full: c, n: riders.filter(r => r.category === c).length }));
+  // everyone who rode all five stages, ranked together
+  const allFive = r => r.stages.every(Boolean);
+  const OVERALL = { id: 'overall', label: 'Overall', full: null, n: riders.filter(allFive).length };
   const state = { scope: scopes.slice().sort((a, b) => b.n - a.n)[0].id, sel: [], slots: {}, gapMode: 'gap', stageMode: 'gap', yfit: { cGap: 'all', cStage: 'all' } };
   (function readHash() {
     const h = new URLSearchParams(location.hash.slice(1));
-    if (h.get('f') && scopes.some(s => s.id === h.get('f'))) state.scope = h.get('f');
+    if (h.get('f') && (h.get('f') === 'overall' || scopes.some(s => s.id === h.get('f')))) state.scope = h.get('f');
     const r = (h.get('r') || '').split(',').map(Number).filter(b => byBib[b]).slice(0, MAX_SEL);
     r.forEach(b => select(b, true));
   })();
@@ -105,7 +108,8 @@
   let flashT; function flash(msg) { const el = document.querySelector('.hint'); const old = el.dataset.old || el.textContent; el.dataset.old = old; el.textContent = msg; clearTimeout(flashT); flashT = setTimeout(() => el.textContent = old, 3500); }
 
   // ---- derived per category
-  function field() { const sc = scopes.find(s => s.id === state.scope); return riders.filter(r => r.category === sc.full); }
+  const allScopes = () => [OVERALL, ...scopes];
+  function field() { const sc = allScopes().find(s => s.id === state.scope); return sc === OVERALL ? riders.filter(allFive) : riders.filter(r => r.category === sc.full); }
   function compute(F) {
     // stages ridden by anyone in this category
     const P = [...Array(D.stages).keys()].filter(i => F.some(r => r.stages[i])).map(i => ({ i, label: 'S' + (i + 1) }));
@@ -245,24 +249,28 @@
       const vals = sel.map(r => calc.get(r.bib).st[k]); const best = Math.min(...vals.filter(v => v != null).concat([Infinity]));
       h += `<tr><td>${p.label}</td>` + vals.map((v, n) => `<td class="${v === best && isFinite(best) ? 'best' : ''}">${fmt(v)}${v != null ? ` <span class="stage-note">(${calc.get(sel[n].bib).spos[k] ?? '–'})</span>` : ''}</td>`).join('') + '</tr>';
     });
-    h += `<tr class="total"><td><strong>Total</strong></td>` + sel.map(r => `<td><strong>${r.total != null ? fmt(r.total) : r.status || '–'}</strong>${r.rank ? ` <span class="stage-note">(${r.rank})</span>` : ''}</td>`).join('') + '</tr>';
+    h += `<tr class="total"><td><strong>Total</strong></td>` + sel.map(r => `<td><strong>${r.total != null ? fmt(r.total) : r.status || '–'}</strong>${calc.get(r.bib).pos[calc.P.length - 1] ? ` <span class="stage-note">(${calc.get(r.bib).pos[calc.P.length - 1]})</span>` : ''}</td>`).join('') + '</tr>';
     h += `<tr><td>Gap to leader</td>` + sel.map(r => `<td>${r.total != null ? fmtGap(calc.get(r.bib).gap[calc.P.length - 1]) : '–'}</td>`).join('') + '</tr></tbody>';
     tbl.innerHTML = h;
   }
 
   // ---- sidebar
   function renderScope() {
-    document.getElementById('scope').innerHTML = scopes.map(s => `<button class="chip" data-id="${s.id}" aria-pressed="${s.id === state.scope}" title="${s.full}">${s.label} · ${s.n}</button>`).join('');
+    document.getElementById('scope').innerHTML = allScopes().map(s => `<button class="chip" data-id="${s.id}" aria-pressed="${s.id === state.scope}" title="${s.full || 'Everyone who rode all 5 stages'}">${s.label} · ${s.n}</button>`).join('');
     const calc = compute(field());
-    document.getElementById('scopeSub').textContent = `Gaps and positions are computed inside this category. Stages ridden: ${calc.P.map(p => p.label).join(', ')}.`;
+    document.getElementById('scopeSub').textContent = state.scope === 'overall'
+      ? 'Everyone who rode all 5 stages, ranked together across categories. Riders from categories that skipped stages are not included.'
+      : `Gaps and positions are computed inside this category. Stages ridden: ${calc.P.map(p => p.label).join(', ')}.`;
   }
   function renderRiders() {
     const q = document.getElementById('search').value.trim().toLowerCase();
-    const list = field().slice().sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999) || a.bib - b.bib)
+    const calc = compute(field()); const last = calc.P.length - 1; const posOf = r => calc.get(r.bib).pos[last];
+    const list = field().slice().sort((a, b) => (posOf(a) ?? 999) - (posOf(b) ?? 999) || a.bib - b.bib)
       .filter(r => !q || r.name.toLowerCase().includes(q) || String(r.bib) === q);
+    const ov = state.scope === 'overall';
     document.getElementById('riders').innerHTML = list.map(r => {
       const s = state.sel.includes(r.bib);
-      return `<label class="rider"><input type="checkbox" data-bib="${r.bib}" ${s ? 'checked' : ''}><span class="sw" style="${s ? 'background:' + colorOf(r.bib) : ''}"></span><span class="rk">${r.rank ?? '–'}</span><span class="nm">${r.name}</span><span class="cat">#${r.bib}${r.status ? ' · ' + r.status : ''}</span></label>`;
+      return `<label class="rider"><input type="checkbox" data-bib="${r.bib}" ${s ? 'checked' : ''}><span class="sw" style="${s ? 'background:' + colorOf(r.bib) : ''}"></span><span class="rk">${posOf(r) ?? '–'}</span><span class="nm">${r.name}</span><span class="cat">#${r.bib}${ov ? ' · ' + r.category.split(/[ (]/)[0] : ''}${r.status ? ' · ' + r.status : ''}</span></label>`;
     }).join('') || '<div class="rider" style="color:var(--muted)">No riders match.</div>';
     document.getElementById('selected').innerHTML = state.sel.map(b => `<span class="tag"><span class="sw" style="background:${colorOf(b)}"></span>${byBib[b].name}<button data-rm="${b}" aria-label="Remove ${byBib[b].name}">×</button></span>`).join('')
       || '<span class="hint" style="margin:0">Nobody highlighted yet.</span>';
@@ -277,7 +285,8 @@
   document.getElementById('clear').addEventListener('click', () => { state.sel = []; state.slots = {}; render(); });
   document.getElementById('top3').addEventListener('click', () => {
     state.sel = []; state.slots = {};
-    field().filter(r => r.rank).sort((a, b) => a.rank - b.rank).slice(0, 3).forEach(r => select(r.bib, true));
+    const F = field(), calc = compute(F), last = calc.P.length - 1;
+    F.filter(r => calc.get(r.bib).pos[last]).sort((a, b) => calc.get(a.bib).pos[last] - calc.get(b.bib).pos[last]).slice(0, 3).forEach(r => select(r.bib, true));
     render();
   });
   for (const [id, key] of [['gapMode', 'gapMode'], ['stageMode', 'stageMode']])

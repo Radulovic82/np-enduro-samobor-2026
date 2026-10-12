@@ -8,6 +8,8 @@ Data comes from https://my.raceresult.com/426482/. This page is unofficial.
 
 Not every category rides every stage (U15 skips S3 and S5, Kadeti/Juniori and Open skip S5), so gaps are computed per category over the stages that category rode.
 
+The Overall view ranks everyone who rode all 5 stages together (E-bike, M1, M2, M3). Riders from the shorter categories are not in it.
+
 ## Updating
 
 ```
