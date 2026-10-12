@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NP Enduro Samobor 2026 results</title>
+<meta name="description" content="Compare rider results stage by stage at NP Enduro Samobor 2026.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1 id="title">NP Enduro Samobor 2026 results</h1>
+  <p id="subtitle">Loading results…</p>
+</header>
+
+<main>
+  <aside>
+    <div class="card">
+      <h2>Category</h2>
+      <p class="sub" id="scopeSub">Leader, gaps and stage positions are computed inside this category.</p>
+      <div class="chips" id="scope"></div>
+    </div>
+    <div class="card riders-card">
+      <h2>Riders</h2>
+      <p class="sub">Pick up to 8 riders to highlight. Everyone else stays as a thin grey line for context.</p>
+      <div class="selected" id="selected"></div>
+      <div class="row" style="margin:8px 0">
+        <button class="btn" id="top3">Top 3</button>
+        <button class="btn" id="clear">Clear</button>
+      </div>
+      <details id="picker" class="picker" open>
+        <summary>Choose riders</summary>
+        <input type="search" id="search" placeholder="Search name or bib" aria-label="Search riders">
+        <div class="riders" id="riders" style="margin-top:8px"></div>
+      </details>
+      <p class="hint">Tip: click a grey line in a chart to add that rider.</p>
+    </div>
+  </aside>
+
+  <section class="charts">
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Gap to leader, stage by stage</h2><p class="sub">Cumulative time behind the category leader after each timed stage. Lower is better.</p></div>
+        <div class="toggles"><div class="toggle yfit" data-yfit="cGap" title="Y axis range"><button aria-pressed="true" data-v="all">Whole field</button><button aria-pressed="false" data-v="sel">Fit highlighted</button></div><div class="toggle" id="gapMode"><button aria-pressed="true" data-v="gap">Gap to leader</button><button aria-pressed="false" data-v="rank">Position</button></div></div>
+      </div>
+      <div class="chart-wrap"><canvas id="cGap" role="img" aria-label="Cumulative gap to leader per stage"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Stage by stage</h2><p class="sub">How far behind the stage winner each rider was on every stage, in seconds.</p></div>
+        <div class="toggles"><div class="toggle yfit" data-yfit="cStage" title="Y axis range"><button aria-pressed="true" data-v="all">Whole field</button><button aria-pressed="false" data-v="sel">Fit highlighted</button></div><div class="toggle" id="stageMode"><button aria-pressed="true" data-v="gap">Gap to stage winner</button><button aria-pressed="false" data-v="rank">Stage position</button></div></div>
+      </div>
+      <div class="chart-wrap"><canvas id="cStage" role="img" aria-label="Gap to stage winner per stage"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h2>Stage times</h2>
+      <p class="sub">Times for the highlighted riders. Bold marks the fastest of the highlighted riders on that stage.</p>
+      <div class="tbl-wrap"><table id="tbl"></table></div>
+    </div>
+  </section>
+</main>
+<footer id="footer"></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(async function () {
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const SLOTS = () => [1,2,3,4,5,6,7,8].map(i => css('--s' + i));
+  const MAX_SEL = 8;
+  const narrow = () => window.innerWidth < 700;
+
+  const D = await (await fetch('data/results.json', { cache: 'no-store' })).json();
+  const riders = D.riders;
+  const byBib = Object.fromEntries(riders.map(r => [r.bib, r]));
+
+  // ---- categories. Not every category rides every stage, so stages are worked out per category.
+  const slug = c => c.split(/[ (]/)[0].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const scopes = D.categories.filter(c => riders.some(r => r.category === c))
+    .map(c => ({ id: slug(c), label: c.replace(/\s*\(.*\)/, '') , full: c, n: riders.filter(r => r.category === c).length }));
+  const state = { scope: scopes.slice().sort((a, b) => b.n - a.n)[0].id, sel: [], slots: {}, gapMode: 'gap', stageMode: 'gap', yfit: { cGap: 'all', cStage: 'all' } };
+  (function readHash() {
+    const h = new URLSearchParams(location.hash.slice(1));
+    if (h.get('f') && scopes.some(s => s.id === h.get('f'))) state.scope = h.get('f');
+    const r = (h.get('r') || '').split(',').map(Number).filter(b => byBib[b]).slice(0, MAX_SEL);
+    r.forEach(b => select(b, true));
+  })();
+  function writeHash() {
+    const p = new URLSearchParams(); p.set('f', state.scope);
+    if (state.sel.length) p.set('r', state.sel.join(','));
+    history.replaceState(null, '', '#' + p);
+  }
+  function select(bib, silent) {
+    if (state.sel.includes(bib)) return;
+    if (state.sel.length >= MAX_SEL) { flash(`Up to ${MAX_SEL} riders can be highlighted at once. Remove one first.`); return; }
+    const used = new Set(Object.values(state.slots));
+    let slot = 0; while (used.has(slot)) slot++;
+    state.slots[bib] = slot; state.sel.push(bib);
+    if (!silent) render();
+  }
+  function deselect(bib) { state.sel = state.sel.filter(b => b !== bib); delete state.slots[bib]; render(); }
+  function toggle(bib) { state.sel.includes(bib) ? deselect(bib) : select(bib); }
+  function colorOf(bib) { return SLOTS()[state.slots[bib]]; }
+  let flashT; function flash(msg) { const el = document.querySelector('.hint'); const old = el.dataset.old || el.textContent; el.dataset.old = old; el.textContent = msg; clearTimeout(flashT); flashT = setTimeout(() => el.textContent = old, 3500); }
+
+  // ---- derived per category
+  function field() { const sc = scopes.find(s => s.id === state.scope); return riders.filter(r => r.category === sc.full); }
+  function compute(F) {
+    // stages ridden by anyone in this category
+    const P = [...Array(D.stages).keys()].filter(i => F.some(r => r.stages[i])).map(i => ({ i, label: 'S' + (i + 1) }));
+    const out = new Map();
+    for (const r of F) {
+      let acc = 0, alive = true;
+      const st = P.map(p => { const x = r.stages[p.i]; return x ? x.time : null; });
+      const cum = st.map(t => { if (t == null) alive = false; if (alive) acc += t; return alive ? +acc.toFixed(2) : null; });
+      out.set(r.bib, { st, cum });
+    }
+    const min = arr => Math.min(...arr.filter(v => v != null).concat([Infinity]));
+    const leader = P.map((_, k) => min(F.map(r => out.get(r.bib).cum[k])));
+    const best = P.map((_, k) => min(F.map(r => out.get(r.bib).st[k])));
+    for (const r of F) { const c = out.get(r.bib);
+      c.gap = c.cum.map((v, k) => v == null ? null : +(v - leader[k]).toFixed(2));
+      c.sgap = c.st.map((v, k) => v == null ? null : +(v - best[k]).toFixed(2));
+      c.pos = P.map(() => null); c.spos = P.map(() => null); }
+    P.forEach((_, k) => {
+      const rankBy = (get, key) => F.filter(r => get(r) != null).sort((a, b) => get(a) - get(b)).forEach((r, n) => out.get(r.bib)[key][k] = n + 1);
+      rankBy(r => out.get(r.bib).cum[k], 'pos'); rankBy(r => out.get(r.bib).st[k], 'spos');
+    });
+    out.P = P; return out;
+  }
+
+  // ---- formatting
+  const fmt = s => { if (s == null) return '–'; const neg = s < 0; s = Math.abs(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+    const body = h ? `${h}:${String(m).padStart(2,'0')}:${sec.toFixed(2).padStart(5,'0')}` : `${m}:${sec.toFixed(2).padStart(5,'0')}`; return (neg ? '-' : '') + body; };
+  const fmtTick = s => { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = Math.round(s % 60); return h ? `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}` : `${m}:${String(sec).padStart(2,'0')}`; };
+  const fmtGap = s => s == null ? '–' : s === 0 ? '0.00' : '+' + fmt(s);
+  const ord = n => n == null ? '–' : n + (['th','st','nd','rd'][(n % 100 - 20) % 10] || ['th','st','nd','rd'][n % 100] || 'th');
+
+  // ---- charts
+  Chart.defaults.font.family = 'system-ui, -apple-system, "Segoe UI", sans-serif';
+  Chart.defaults.font.size = 12;
+  const endLabels = {
+    id: 'endLabels',
+    afterDatasetsDraw(chart) {
+      const { ctx } = chart; ctx.save(); ctx.font = '600 12px system-ui, -apple-system, "Segoe UI", sans-serif'; ctx.textBaseline = 'middle';
+      const placed = [];
+      chart.data.datasets.forEach((ds, di) => {
+        if (!ds.highlight || !chart.isDatasetVisible(di) || narrow()) return;
+        const meta = chart.getDatasetMeta(di);
+        let last = null; for (let i = meta.data.length - 1; i >= 0; i--) if (ds.data[i] != null) { last = meta.data[i]; break; }
+        if (!last) return;
+        let y = last.y; while (placed.some(p => Math.abs(p - y) < 13)) y += 13; placed.push(y);
+        ctx.fillStyle = css('--ink'); ctx.fillText(ds.label, Math.min(last.x + 8, chart.chartArea.right - 4), y);
+      }); ctx.restore();
+    }
+  };
+  Chart.register(endLabels);
+
+  function baseOptions({ yTitle, invert, xLabels, yFmt, unit, yRange }) {
+    return {
+      responsive: true, maintainAspectRatio: false, animation: false, normalized: true, spanGaps: false,
+      layout: { padding: { top: 4, right: narrow() ? 8 : 110 } },
+      interaction: { mode: 'index', intersect: false },
+      onClick(evt, els, chart) {
+        const hit = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true)[0];
+        if (!hit) return; const ds = chart.data.datasets[hit.datasetIndex]; if (ds.bib) toggle(ds.bib);
+      },
+      onHover(evt, els, chart) { const hit = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true)[0]; chart.canvas.style.cursor = hit ? 'pointer' : 'default'; },
+      plugins: {
+        legend: { display: true, position: 'bottom', align: 'start', labels: { boxWidth: 12, boxHeight: 3, usePointStyle: false, color: css('--ink-2'),
+          filter: item => item.text && !item.text.startsWith('__') } },
+        tooltip: {
+          backgroundColor: css('--surface'), titleColor: css('--ink'), bodyColor: css('--ink-2'), borderColor: css('--border'), borderWidth: 1, padding: 10,
+          itemSort: (a, b) => (a.raw ?? 1e9) - (b.raw ?? 1e9),
+          filter: (item, idx, items) => { if (item.dataset.highlight) return true;
+            const anyHi = items.some(i => i.dataset.highlight); return !anyHi && idx < 3; },
+          callbacks: { label: c => ` ${c.dataset.label.replace(/^__/, '')}: ${yFmt(c.raw)}`, labelColor: c => ({ borderColor: c.dataset.borderColor, backgroundColor: c.dataset.borderColor }) },
+        },
+      },
+      scales: {
+        x: { grid: { color: css('--grid') }, ticks: { color: css('--muted'), maxRotation: 0, autoSkip: true }, border: { color: css('--axis') }, labels: xLabels },
+        y: { reverse: !!invert, title: { display: true, text: yTitle, color: css('--muted') }, grid: { color: css('--grid') }, border: { color: css('--axis'), display: false },
+          ticks: { color: css('--muted'), precision: 0, callback: v => invert ? (Number.isInteger(v) && v >= 1 ? v : '') : (unit === 'time' ? fmtTick(v) : v) },
+          ...(yRange ? { min: yRange[0], max: yRange[1] } : invert ? { min: 1 } : { beginAtZero: true }) },
+      },
+    };
+  }
+
+  function seriesFor(F, calc, pick) {
+    const grey = css('--ghost');
+    const hi = [], lo = [];
+    for (const r of F) {
+      const s = state.sel.includes(r.bib);
+      (s ? hi : lo).push({
+        label: (s ? '' : '__') + r.name, bib: r.bib, highlight: s, data: pick(calc.get(r.bib)),
+        borderColor: s ? colorOf(r.bib) : grey, backgroundColor: s ? colorOf(r.bib) : grey,
+        borderWidth: s ? 2.2 : 1, pointRadius: s ? 3 : 0, pointHoverRadius: s ? 5 : 3, pointBorderColor: css('--surface'), pointBorderWidth: s ? 1.5 : 0,
+        tension: 0.15, order: s ? 0 : 1,
+      });
+    }
+    hi.sort((a, b) => state.slots[a.bib] - state.slots[b.bib]);
+    return [...hi, ...lo];
+  }
+
+  const charts = {};
+  function mkChart(id, cfg) { if (charts[id]) { charts[id].data = cfg.data; charts[id].options = cfg.options; charts[id].update(); } else charts[id] = new Chart(document.getElementById(id), { type: 'line', ...cfg }); }
+
+  // y range: fit to the highlighted riders only when asked
+  function yRangeFor(datasets, invert, fitSel) {
+    const hi = datasets.filter(d => d.highlight);
+    if (!(fitSel && hi.length)) return null;
+    let lo = Infinity, hiV = -Infinity;
+    for (const d of hi) for (const v of d.data) { if (v == null) continue; if (v < lo) lo = v; if (v > hiV) hiV = v; }
+    if (!isFinite(lo)) return null;
+    if (invert) return [Math.max(1, Math.floor(lo) - 1), Math.ceil(hiV) + 1];
+    const pad = Math.max((hiV - lo) * 0.08, 2);
+    return [Math.max(0, Math.floor(lo - pad)), Math.ceil(hiV + pad)];
+  }
+  document.querySelectorAll('.yfit').forEach(t => t.addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (!b) return;
+    state.yfit[t.dataset.yfit] = b.dataset.v; [...t.children].forEach(c => c.setAttribute('aria-pressed', c === b)); renderCharts(); }));
+
+  function renderCharts() {
+    const F = field(); const calc = compute(F);
+    const labels = calc.P.map(p => p.label);
+    const gapMode = state.gapMode === 'gap';
+    let ds = seriesFor(F, calc, c => gapMode ? c.gap : c.pos);
+    mkChart('cGap', { data: { labels, datasets: ds },
+      options: baseOptions({ yTitle: gapMode ? 'behind leader' : 'position', invert: !gapMode, yFmt: gapMode ? fmtGap : ord, unit: gapMode ? 'time' : '',
+        yRange: yRangeFor(ds, !gapMode, state.yfit.cGap === 'sel') }) });
+    const stGap = state.stageMode === 'gap';
+    ds = seriesFor(F, calc, c => stGap ? c.sgap : c.spos);
+    mkChart('cStage', { data: { labels, datasets: ds },
+      options: baseOptions({ yTitle: stGap ? 'behind stage winner' : 'stage position', invert: !stGap, yFmt: stGap ? fmtGap : ord, unit: stGap ? 'time' : '',
+        yRange: yRangeFor(ds, !stGap, state.yfit.cStage === 'sel') }) });
+    renderTable(F, calc);
+  }
+
+  function renderTable(F, calc) {
+    const tbl = document.getElementById('tbl');
+    const sel = state.sel.map(b => byBib[b]).filter(r => F.includes(r));
+    if (!sel.length) { tbl.innerHTML = `<tr><td style="text-align:left;color:var(--muted)">Highlight riders to see their stage times here.</td></tr>`; return; }
+    let h = '<thead><tr><th>Stage</th>' + sel.map(r => `<th><span class="sw" style="display:inline-block;vertical-align:middle;background:${colorOf(r.bib)};margin-right:6px"></span>${r.name}</th>`).join('') + '</tr></thead><tbody>';
+    calc.P.forEach((p, k) => {
+      const vals = sel.map(r => calc.get(r.bib).st[k]); const best = Math.min(...vals.filter(v => v != null).concat([Infinity]));
+      h += `<tr><td>${p.label}</td>` + vals.map((v, n) => `<td class="${v === best && isFinite(best) ? 'best' : ''}">${fmt(v)}${v != null ? ` <span class="stage-note">(${calc.get(sel[n].bib).spos[k] ?? '–'})</span>` : ''}</td>`).join('') + '</tr>';
+    });
+    h += `<tr class="total"><td><strong>Total</strong></td>` + sel.map(r => `<td><strong>${r.total != null ? fmt(r.total) : r.status || '–'}</strong>${r.rank ? ` <span class="stage-note">(${r.rank})</span>` : ''}</td>`).join('') + '</tr>';
+    h += `<tr><td>Gap to leader</td>` + sel.map(r => `<td>${r.total != null ? fmtGap(calc.get(r.bib).gap[calc.P.length - 1]) : '–'}</td>`).join('') + '</tr></tbody>';
+    tbl.innerHTML = h;
+  }
+
+  // ---- sidebar
+  function renderScope() {
+    document.getElementById('scope').innerHTML = scopes.map(s => `<button class="chip" data-id="${s.id}" aria-pressed="${s.id === state.scope}" title="${s.full}">${s.label} · ${s.n}</button>`).join('');
+    const calc = compute(field());
+    document.getElementById('scopeSub').textContent = `Gaps and positions are computed inside this category. Stages ridden: ${calc.P.map(p => p.label).join(', ')}.`;
+  }
+  function renderRiders() {
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    const list = field().slice().sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999) || a.bib - b.bib)
+      .filter(r => !q || r.name.toLowerCase().includes(q) || String(r.bib) === q);
+    document.getElementById('riders').innerHTML = list.map(r => {
+      const s = state.sel.includes(r.bib);
+      return `<label class="rider"><input type="checkbox" data-bib="${r.bib}" ${s ? 'checked' : ''}><span class="sw" style="${s ? 'background:' + colorOf(r.bib) : ''}"></span><span class="rk">${r.rank ?? '–'}</span><span class="nm">${r.name}</span><span class="cat">#${r.bib}${r.status ? ' · ' + r.status : ''}</span></label>`;
+    }).join('') || '<div class="rider" style="color:var(--muted)">No riders match.</div>';
+    document.getElementById('selected').innerHTML = state.sel.map(b => `<span class="tag"><span class="sw" style="background:${colorOf(b)}"></span>${byBib[b].name}<button data-rm="${b}" aria-label="Remove ${byBib[b].name}">×</button></span>`).join('')
+      || '<span class="hint" style="margin:0">Nobody highlighted yet.</span>';
+  }
+  function render() { renderScope(); renderRiders(); renderCharts(); writeHash(); }
+  function dropOutOfScope() { const F = field(); state.sel.filter(b => !F.includes(byBib[b])).forEach(b => { state.sel = state.sel.filter(x => x !== b); delete state.slots[b]; }); }
+
+  document.getElementById('scope').addEventListener('click', e => { const b = e.target.closest('[data-id]'); if (b) { state.scope = b.dataset.id; dropOutOfScope(); render(); } });
+  document.getElementById('riders').addEventListener('change', e => { const b = e.target.dataset.bib; if (b) toggle(+b); });
+  document.getElementById('selected').addEventListener('click', e => { const b = e.target.dataset.rm; if (b) deselect(+b); });
+  document.getElementById('search').addEventListener('input', renderRiders);
+  document.getElementById('clear').addEventListener('click', () => { state.sel = []; state.slots = {}; render(); });
+  document.getElementById('top3').addEventListener('click', () => {
+    state.sel = []; state.slots = {};
+    field().filter(r => r.rank).sort((a, b) => a.rank - b.rank).slice(0, 3).forEach(r => select(r.bib, true));
+    render();
+  });
+  for (const [id, key] of [['gapMode', 'gapMode'], ['stageMode', 'stageMode']])
+    document.getElementById(id).addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (!b) return; state[key] = b.dataset.v;
+      [...e.currentTarget.children].forEach(c => c.setAttribute('aria-pressed', c === b)); renderCharts(); });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderCharts);
+  let rzT; window.addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(renderCharts, 200); });
+
+  // ---- header
+  const date = new Date(D.date + 'T12:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('title').textContent = D.event;
+  document.getElementById('subtitle').innerHTML = `${riders.length} riders · ${date} · ${D.stages} timed stages, not every category rides all of them · ${D.eventOver ? 'final' : 'race in progress'}. Source: <a href="${D.source}" target="_blank" rel="noopener">raceresult</a>.`;
+  document.getElementById('footer').textContent = `Data pulled ${new Date(D.fetchedAt).toLocaleString()} · unofficial, for fun · times in min:sec, gaps in seconds`;
+
+  if (narrow()) document.getElementById('picker').open = false;
+  dropOutOfScope(); render();
+})();
+</script>
+</body>
+</html>

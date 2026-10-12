@@ -1,0 +1,1071 @@
+{
+ "event": "NP ENDURO SAMOBOR 2026",
+ "eventId": 426482,
+ "date": "2026-10-11",
+ "source": "https://my.raceresult.com/426482/results",
+ "fetchedAt": "2026-10-12T15:16:52Z",
+ "eventOver": true,
+ "stages": 5,
+ "categories": [
+  "U15 (13-14 god)",
+  "KADETI / JUNIORI (15-18 god)",
+  "M1 (19-29 god)",
+  "M2 (30-39 god)",
+  "M3 (40+ god)",
+  "Žene (15+ god)",
+  "OPEN (15+ god)",
+  "E-bike (15+ god)"
+ ],
+ "riders": [
+  {
+   "bib": 41,
+   "name": "Berislav Topol",
+   "club": "",
+   "category": "E-bike (15+ god)",
+   "gender": "m",
+   "rank": 1,
+   "status": "",
+   "total": 903.41,
+   "stages": [
+    {
+     "time": 118.73,
+     "rank": 1
+    },
+    {
+     "time": 339.99,
+     "rank": 1
+    },
+    {
+     "time": 239.58,
+     "rank": 1
+    },
+    {
+     "time": 102.35,
+     "rank": 1
+    },
+    {
+     "time": 102.75,
+     "rank": 1
+    }
+   ]
+  },
+  {
+   "bib": 44,
+   "name": "Leo Meić Sidić",
+   "club": "BBK Šišmiš",
+   "category": "E-bike (15+ god)",
+   "gender": "m",
+   "rank": 2,
+   "status": "",
+   "total": 1478.29,
+   "stages": [
+    {
+     "time": 129.3,
+     "rank": 3
+    },
+    {
+     "time": 508.87,
+     "rank": 2
+    },
+    {
+     "time": 268.85,
+     "rank": 2
+    },
+    {
+     "time": 462.32,
+     "rank": 2
+    },
+    {
+     "time": 108.94,
+     "rank": 2
+    }
+   ]
+  },
+  {
+   "bib": 42,
+   "name": "Luka Vešligaj",
+   "club": "BK Opusteno",
+   "category": "E-bike (15+ god)",
+   "gender": "m",
+   "rank": null,
+   "status": "DNF",
+   "total": null,
+   "stages": [
+    {
+     "time": 123.43,
+     "rank": 2
+    },
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "bib": 17,
+   "name": "Tin Kelečić",
+   "club": "BK Opušteno",
+   "category": "KADETI / JUNIORI (15-18 god)",
+   "gender": "m",
+   "rank": 1,
+   "status": "",
+   "total": 767.22,
+   "stages": [
+    {
+     "time": 118.85,
+     "rank": 2
+    },
+    {
+     "time": 313.2,
+     "rank": 1
+    },
+    {
+     "time": 230.62,
+     "rank": 2
+    },
+    {
+     "time": 104.54,
+     "rank": 2
+    },
+    null
+   ]
+  },
+  {
+   "bib": 16,
+   "name": "Lukas Crnkovic",
+   "club": "BK Coast Riders",
+   "category": "KADETI / JUNIORI (15-18 god)",
+   "gender": "m",
+   "rank": 2,
+   "status": "",
+   "total": 774.79,
+   "stages": [
+    {
+     "time": 118.43,
+     "rank": 1
+    },
+    {
+     "time": 331.92,
+     "rank": 2
+    },
+    {
+     "time": 222.9,
+     "rank": 1
+    },
+    {
+     "time": 101.54,
+     "rank": 1
+    },
+    null
+   ]
+  },
+  {
+   "bib": 18,
+   "name": "Tomislav Teofilov",
+   "club": "Bk Zadar",
+   "category": "KADETI / JUNIORI (15-18 god)",
+   "gender": "m",
+   "rank": 3,
+   "status": "",
+   "total": 834.72,
+   "stages": [
+    {
+     "time": 120.33,
+     "rank": 3
+    },
+    {
+     "time": 357.89,
+     "rank": 3
+    },
+    {
+     "time": 248.54,
+     "rank": 3
+    },
+    {
+     "time": 107.95,
+     "rank": 3
+    },
+    null
+   ]
+  },
+  {
+   "bib": 21,
+   "name": "Noel Babin",
+   "club": "Bk Zadar",
+   "category": "KADETI / JUNIORI (15-18 god)",
+   "gender": "m",
+   "rank": 4,
+   "status": "",
+   "total": 895.03,
+   "stages": [
+    {
+     "time": 142.5,
+     "rank": 6
+    },
+    {
+     "time": 364.25,
+     "rank": 4
+    },
+    {
+     "time": 263.5,
+     "rank": 4
+    },
+    {
+     "time": 124.77,
+     "rank": 6
+    },
+    null
+   ]
+  },
+  {
+   "bib": 22,
+   "name": "Karlo Car",
+   "club": "BBK T-REX",
+   "category": "KADETI / JUNIORI (15-18 god)",
+   "gender": "m",
+   "rank": 5,
+   "status": "",
+   "total": 933.67,
+   "stages": [
+    {
+     "time": 130.46,
+     "rank": 4
+    },
+    {
+     "time": 396.41,
+     "rank": 5
+    },
+    {
+     "time": 289.64,
+     "rank": 5
+    },
+    {
+     "time": 117.14,
+     "rank": 5
+    },
+    null
+   ]
+  },
+  {
+   "bib": 24,
+   "name": "Fran Erdelja",
+   "club": "BBK Šišmiš",
+   "category": "KADETI / JUNIORI (15-18 god)",
+   "gender": "m",
+   "rank": 6,
+   "status": "",
+   "total": 1042.66,
+   "stages": [
+    {
+     "time": 130.77,
+     "rank": 5
+    },
+    {
+     "time": 451.95,
+     "rank": 7
+    },
+    {
+     "time": 325.28,
+     "rank": 7
+    },
+    {
+     "time": 134.64,
+     "rank": 7
+    },
+    null
+   ]
+  },
+  {
+   "bib": 23,
+   "name": "Patrik Kripl",
+   "club": "BBK Team Rodeo",
+   "category": "KADETI / JUNIORI (15-18 god)",
+   "gender": "m",
+   "rank": 7,
+   "status": "",
+   "total": 1124.23,
+   "stages": [
+    {
+     "time": 285.09,
+     "rank": 8
+    },
+    {
+     "time": 409.71,
+     "rank": 6
+    },
+    {
+     "time": 312.9,
+     "rank": 6
+    },
+    {
+     "time": 116.52,
+     "rank": 4
+    },
+    null
+   ]
+  },
+  {
+   "bib": 19,
+   "name": "Andrej Bošnjaković",
+   "club": "Bk Zadar",
+   "category": "KADETI / JUNIORI (15-18 god)",
+   "gender": "m",
+   "rank": null,
+   "status": "DNF",
+   "total": null,
+   "stages": [
+    {
+     "time": 173.19,
+     "rank": 7
+    },
+    null,
+    null,
+    {
+     "time": 138.92,
+     "rank": 8
+    },
+    null
+   ]
+  },
+  {
+   "bib": 1,
+   "name": "Fran Bošnjak",
+   "club": "BBK Šišmiš",
+   "category": "M1 (19-29 god)",
+   "gender": "m",
+   "rank": 1,
+   "status": "",
+   "total": 777.09,
+   "stages": [
+    {
+     "time": 103.37,
+     "rank": 1
+    },
+    {
+     "time": 283.71,
+     "rank": 1
+    },
+    {
+     "time": 210.84,
+     "rank": 1
+    },
+    {
+     "time": 90.59,
+     "rank": 1
+    },
+    {
+     "time": 88.57,
+     "rank": 1
+    }
+   ]
+  },
+  {
+   "bib": 10,
+   "name": "Stjepan Makovec",
+   "club": "BK Opušteno",
+   "category": "M1 (19-29 god)",
+   "gender": "m",
+   "rank": 2,
+   "status": "",
+   "total": 854.25,
+   "stages": [
+    {
+     "time": 113.35,
+     "rank": 3
+    },
+    {
+     "time": 319.33,
+     "rank": 2
+    },
+    {
+     "time": 223.21,
+     "rank": 2
+    },
+    {
+     "time": 101.06,
+     "rank": 3
+    },
+    {
+     "time": 97.29,
+     "rank": 3
+    }
+   ]
+  },
+  {
+   "bib": 4,
+   "name": "Jakov Svilokos",
+   "club": "BGK Tuškanac",
+   "category": "M1 (19-29 god)",
+   "gender": "m",
+   "rank": 3,
+   "status": "",
+   "total": 876.54,
+   "stages": [
+    {
+     "time": 112.91,
+     "rank": 2
+    },
+    {
+     "time": 337.43,
+     "rank": 6
+    },
+    {
+     "time": 229.46,
+     "rank": 3
+    },
+    {
+     "time": 99.85,
+     "rank": 2
+    },
+    {
+     "time": 96.87,
+     "rank": 2
+    }
+   ]
+  },
+  {
+   "bib": 3,
+   "name": "Ivan Peruško",
+   "club": "BK AXA",
+   "category": "M1 (19-29 god)",
+   "gender": "m",
+   "rank": 4,
+   "status": "",
+   "total": 889.59,
+   "stages": [
+    {
+     "time": 120.47,
+     "rank": 6
+    },
+    {
+     "time": 327.1,
+     "rank": 4
+    },
+    {
+     "time": 236.68,
+     "rank": 4
+    },
+    {
+     "time": 102.97,
+     "rank": 4
+    },
+    {
+     "time": 102.35,
+     "rank": 4
+    }
+   ]
+  },
+  {
+   "bib": 2,
+   "name": "Sanjin Crnkovic",
+   "club": "Coast riders",
+   "category": "M1 (19-29 god)",
+   "gender": "m",
+   "rank": 5,
+   "status": "",
+   "total": 901.19,
+   "stages": [
+    {
+     "time": 115.18,
+     "rank": 4
+    },
+    {
+     "time": 323.15,
+     "rank": 3
+    },
+    {
+     "time": 253.42,
+     "rank": 7
+    },
+    {
+     "time": 105.17,
+     "rank": 5
+    },
+    {
+     "time": 104.26,
+     "rank": 6
+    }
+   ]
+  },
+  {
+   "bib": 7,
+   "name": "Sven Lukić",
+   "club": "BK Gema",
+   "category": "M1 (19-29 god)",
+   "gender": "m",
+   "rank": 6,
+   "status": "",
+   "total": 909.33,
+   "stages": [
+    {
+     "time": 120.77,
+     "rank": 7
+    },
+    {
+     "time": 331.79,
+     "rank": 5
+    },
+    {
+     "time": 243.57,
+     "rank": 5
+    },
+    {
+     "time": 110.5,
+     "rank": 7
+    },
+    {
+     "time": 102.68,
+     "rank": 5
+    }
+   ]
+  },
+  {
+   "bib": 6,
+   "name": "Luka Perkov",
+   "club": "Coast Riders",
+   "category": "M1 (19-29 god)",
+   "gender": "m",
+   "rank": 7,
+   "status": "",
+   "total": 947.34,
+   "stages": [
+    {
+     "time": 120.07,
+     "rank": 5
+    },
+    {
+     "time": 353.19,
+     "rank": 7
+    },
+    {
+     "time": 256.08,
+     "rank": 8
+    },
+    {
+     "time": 111.39,
+     "rank": 8
+    },
+    {
+     "time": 106.6,
+     "rank": 7
+    }
+   ]
+  },
+  {
+   "bib": 5,
+   "name": "Dorian Dolić",
+   "club": "BK Dinamo",
+   "category": "M1 (19-29 god)",
+   "gender": "m",
+   "rank": 8,
+   "status": "",
+   "total": 971.61,
+   "stages": [
+    {
+     "time": 134.61,
+     "rank": 10
+    },
+    {
+     "time": 359.63,
+     "rank": 8
+    },
+    {
+     "time": 250.0,
+     "rank": 6
+    },
+    {
+     "time": 113.27,
+     "rank": 9
+    },
+    {
+     "time": 114.08,
+     "rank": 9
+    }
+   ]
+  },
+  {
+   "bib": 9,
+   "name": "Domagoj Pučar",
+   "club": "BK Opušteno",
+   "category": "M1 (19-29 god)",
+   "gender": "m",
+   "rank": 9,
+   "status": "",
+   "total": 986.77,
+   "stages": [
+    {
+     "time": 122.35,
+     "rank": 8
+    },
+    {
+     "time": 380.76,
+     "rank": 9
+    },
+    {
+     "time": 265.76,
+     "rank": 10
+    },
+    {
+     "time": 110.24,
+     "rank": 6
+    },
+    {
+     "time": 107.64,
+     "rank": 8
+    }
+   ]
+  },
+  {
+   "bib": 8,
+   "name": "Mario Tadic",
+   "club": "BK Opušteno",
+   "category": "M1 (19-29 god)",
+   "gender": "m",
+   "rank": 10,
+   "status": "",
+   "total": 1016.51,
+   "stages": [
+    {
+     "time": 131.05,
+     "rank": 9
+    },
+    {
+     "time": 388.04,
+     "rank": 10
+    },
+    {
+     "time": 262.15,
+     "rank": 9
+    },
+    {
+     "time": 118.31,
+     "rank": 10
+    },
+    {
+     "time": 116.94,
+     "rank": 10
+    }
+   ]
+  },
+  {
+   "bib": 13,
+   "name": "Marko Pavec",
+   "club": "BIKE PARK SLJEME",
+   "category": "M2 (30-39 god)",
+   "gender": "m",
+   "rank": 1,
+   "status": "",
+   "total": 984.85,
+   "stages": [
+    {
+     "time": 120.88,
+     "rank": 1
+    },
+    {
+     "time": 368.02,
+     "rank": 1
+    },
+    {
+     "time": 271.27,
+     "rank": 1
+    },
+    {
+     "time": 112.88,
+     "rank": 1
+    },
+    {
+     "time": 111.78,
+     "rank": 1
+    }
+   ]
+  },
+  {
+   "bib": 12,
+   "name": "Filip Radulović",
+   "club": "Škola biciklizma Zagreb",
+   "category": "M2 (30-39 god)",
+   "gender": "m",
+   "rank": 2,
+   "status": "",
+   "total": 1132.55,
+   "stages": [
+    {
+     "time": 134.62,
+     "rank": 2
+    },
+    {
+     "time": 443.9,
+     "rank": 2
+    },
+    {
+     "time": 297.65,
+     "rank": 2
+    },
+    {
+     "time": 129.71,
+     "rank": 2
+    },
+    {
+     "time": 126.65,
+     "rank": 2
+    }
+   ]
+  },
+  {
+   "bib": 14,
+   "name": "Luka Betević Dadić",
+   "club": "BBK Šišmiš Samobor",
+   "category": "M3 (40+ god)",
+   "gender": "m",
+   "rank": 1,
+   "status": "",
+   "total": 1034.61,
+   "stages": [
+    {
+     "time": 166.35,
+     "rank": 2
+    },
+    {
+     "time": 381.18,
+     "rank": 1
+    },
+    {
+     "time": 257.13,
+     "rank": 1
+    },
+    {
+     "time": 116.23,
+     "rank": 1
+    },
+    {
+     "time": 113.71,
+     "rank": 1
+    }
+   ]
+  },
+  {
+   "bib": 15,
+   "name": "Goran Brlek",
+   "club": "BBK Šišmiš",
+   "category": "M3 (40+ god)",
+   "gender": "m",
+   "rank": 2,
+   "status": "",
+   "total": 1089.76,
+   "stages": [
+    {
+     "time": 141.62,
+     "rank": 1
+    },
+    {
+     "time": 414.54,
+     "rank": 2
+    },
+    {
+     "time": 272.16,
+     "rank": 2
+    },
+    {
+     "time": 133.01,
+     "rank": 2
+    },
+    {
+     "time": 128.41,
+     "rank": 2
+    }
+   ]
+  },
+  {
+   "bib": 39,
+   "name": "Ivan Šošić",
+   "club": "BK Opušteno",
+   "category": "OPEN (15+ god)",
+   "gender": "m",
+   "rank": 1,
+   "status": "",
+   "total": 922.74,
+   "stages": [
+    {
+     "time": 125.76,
+     "rank": 1
+    },
+    {
+     "time": 397.65,
+     "rank": 1
+    },
+    {
+     "time": 276.51,
+     "rank": 1
+    },
+    {
+     "time": 122.81,
+     "rank": 2
+    },
+    null
+   ]
+  },
+  {
+   "bib": 40,
+   "name": "Marko Dvoršek",
+   "club": "Bk Opušteno",
+   "category": "OPEN (15+ god)",
+   "gender": "m",
+   "rank": 2,
+   "status": "",
+   "total": 955.89,
+   "stages": [
+    {
+     "time": 131.06,
+     "rank": 2
+    },
+    {
+     "time": 423.42,
+     "rank": 2
+    },
+    {
+     "time": 280.31,
+     "rank": 2
+    },
+    {
+     "time": 121.08,
+     "rank": 1
+    },
+    null
+   ]
+  },
+  {
+   "bib": 34,
+   "name": "Vjeko Herceg",
+   "club": "Bk Opušteno",
+   "category": "U15 (13-14 god)",
+   "gender": "m",
+   "rank": 1,
+   "status": "",
+   "total": 619.73,
+   "stages": [
+    {
+     "time": 129.11,
+     "rank": 5
+    },
+    {
+     "time": 371.45,
+     "rank": 1
+    },
+    null,
+    {
+     "time": 119.17,
+     "rank": 6
+    },
+    null
+   ]
+  },
+  {
+   "bib": 27,
+   "name": "Nikola Lugarić",
+   "club": "BBK Krpelj",
+   "category": "U15 (13-14 god)",
+   "gender": "m",
+   "rank": 2,
+   "status": "",
+   "total": 624.04,
+   "stages": [
+    {
+     "time": 121.59,
+     "rank": 2
+    },
+    {
+     "time": 391.61,
+     "rank": 5
+    },
+    null,
+    {
+     "time": 110.84,
+     "rank": 1
+    },
+    null
+   ]
+  },
+  {
+   "bib": 33,
+   "name": "Matija Puškarić",
+   "club": "BK Opušteno",
+   "category": "U15 (13-14 god)",
+   "gender": "m",
+   "rank": 3,
+   "status": "",
+   "total": 625.77,
+   "stages": [
+    {
+     "time": 126.46,
+     "rank": 3
+    },
+    {
+     "time": 388.0,
+     "rank": 2
+    },
+    null,
+    {
+     "time": 111.3,
+     "rank": 2
+    },
+    null
+   ]
+  },
+  {
+   "bib": 25,
+   "name": "Jan Horvat",
+   "club": "BBK Šišmiš",
+   "category": "U15 (13-14 god)",
+   "gender": "m",
+   "rank": 4,
+   "status": "",
+   "total": 628.09,
+   "stages": [
+    {
+     "time": 119.72,
+     "rank": 1
+    },
+    {
+     "time": 389.66,
+     "rank": 3
+    },
+    null,
+    {
+     "time": 118.7,
+     "rank": 4
+    },
+    null
+   ]
+  },
+  {
+   "bib": 26,
+   "name": "Petar Rabljenović",
+   "club": "Bbk Šišmiš",
+   "category": "U15 (13-14 god)",
+   "gender": "m",
+   "rank": 5,
+   "status": "",
+   "total": 635.18,
+   "stages": [
+    {
+     "time": 127.01,
+     "rank": 4
+    },
+    {
+     "time": 389.81,
+     "rank": 4
+    },
+    null,
+    {
+     "time": 118.34,
+     "rank": 3
+    },
+    null
+   ]
+  },
+  {
+   "bib": 28,
+   "name": "Lovro Lobel Strukan",
+   "club": "BK CRO MTB",
+   "category": "U15 (13-14 god)",
+   "gender": "m",
+   "rank": 6,
+   "status": "",
+   "total": 661.38,
+   "stages": [
+    {
+     "time": 134.48,
+     "rank": 6
+    },
+    {
+     "time": 408.01,
+     "rank": 6
+    },
+    null,
+    {
+     "time": 118.89,
+     "rank": 5
+    },
+    null
+   ]
+  },
+  {
+   "bib": 30,
+   "name": "Lovro Radelja",
+   "club": "BK Rijeka",
+   "category": "U15 (13-14 god)",
+   "gender": "m",
+   "rank": 7,
+   "status": "",
+   "total": 764.85,
+   "stages": [
+    {
+     "time": 138.71,
+     "rank": 7
+    },
+    {
+     "time": 495.81,
+     "rank": 7
+    },
+    null,
+    {
+     "time": 130.33,
+     "rank": 7
+    },
+    null
+   ]
+  },
+  {
+   "bib": 29,
+   "name": "Mateo Humplik",
+   "club": "BBK Šišmiš",
+   "category": "U15 (13-14 god)",
+   "gender": "m",
+   "rank": 8,
+   "status": "",
+   "total": 853.87,
+   "stages": [
+    {
+     "time": 144.1,
+     "rank": 8
+    },
+    {
+     "time": 572.64,
+     "rank": 8
+    },
+    null,
+    {
+     "time": 137.11,
+     "rank": 8
+    },
+    null
+   ]
+  },
+  {
+   "bib": 31,
+   "name": "Matija Frleta",
+   "club": "BK Rijeka",
+   "category": "U15 (13-14 god)",
+   "gender": "m",
+   "rank": 9,
+   "status": "",
+   "total": 873.31,
+   "stages": [
+    {
+     "time": 146.47,
+     "rank": 9
+    },
+    {
+     "time": 573.37,
+     "rank": 9
+    },
+    null,
+    {
+     "time": 153.46,
+     "rank": 9
+    },
+    null
+   ]
+  }
+ ]
+}
